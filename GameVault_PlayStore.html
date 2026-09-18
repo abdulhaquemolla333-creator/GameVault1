@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      const SUPABASE_URL = "https://rmksxmcpucwdlmyrnffa.supabase.co";
+      const SUPABASE_ANON_KEY = "sb_publishable_TK1vE0_tmHulmf0PdKtdTw_o0P-lIdX";
+      const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>GameVault</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+
+body{
+ background:#07090d;
+ color:#fff;
+ min-height:100vh;
+}
+
+button,input,textarea,select{font:inherit}
+
+button{cursor:pointer}
+
+.page{display:none;min-height:100vh}
+.page.active{display:block}
+
+/* LOGIN */
+.auth{
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ min-height:100vh;
+ padding:20px;
+ background:
+ radial-gradient(circle at top,#142738 0,#07090d 45%);
+}
+
+.auth-box{
+ width:100%;
+ max-width:400px;
+ padding:28px;
+ background:#10141c;
+ border:1px solid #27313e;
+ border-radius:24px;
+ box-shadow:0 20px 60px #0008;
+}
+
+.brand{
+ text-align:center;
+ font-size:30px;
+ font-weight:800;
+ color:#55d6ff;
+ letter-spacing:2px;
+ margin-bottom:8px;
+}
+
+.sub{
+ text-align:center;
+ color:#8793a4;
+ margin-bottom:25px;
+}
+
+.tabs{
+ display:flex;
+ background:#080b10;
+ border-radius:12px;
+ padding:4px;
+ margin-bottom:20px;
+}
+
+.tabs button{
+ width:50%;
+ border:0;
+ padding:11px;
+ border-radius:9px;
+ color:#8d99a8;
+ background:transparent;
+}
+
+.tabs button.active{
+ background:#55d6ff;
+ color:#061018;
+ font-weight:bold;
+}
+
+.input{
+ width:100%;
+ padding:14px;
+ margin-bottom:12px;
+ border:1px solid #293340;
+ border-radius:12px;
+ background:#080c12;
+ color:#fff;
+ outline:none;
+}
+
+.input:focus{border-color:#55d6ff}
+
+.primary{
+ width:100%;
+ padding:14px;
+ border:0;
+ border-radius:12px;
+ background:#55d6ff;
+ color:#061018;
+ font-weight:bold;
+}
+
+.google-btn{
+ width:100%;
+ padding:14px;
+ margin-top:10px;
+ border:1px solid #344151;
+ border-radius:12px;
+ background:#fff;
+ color:#111;
+ font-weight:bold;
+}
+
+.google-btn:disabled{opacity:.6;cursor:not-allowed}
+
+.small{
+ text-align:center;
+ color:#667384;
+ font-size:12px;
+ margin-top:15px;
+}
+
+/* HEADER */
+header{
+ position:sticky;
+ top:0;
+ z-index:20;
+ height:68px;
+ padding:0 17px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ background:#0c1016ee;
+ backdrop-filter:blur(12px);
+ border-bottom:1px solid #202733;
+}
+
+.logo{
+ color:#55d6ff;
+ font-size:21px;
+ font-weight:800;
+ letter-spacing:1px;
+}
+
+.user-btn{
+ width:40px;
+ height:40px;
+ border-radius:50%;
+ border:1px solid #293341;
+ background:#151b24;
+ color:#55d6ff;
+}
+
+main{
+ max-width:1100px;
+ margin:auto;
+ padding:20px 17px 90px;
+}
+
+/* HOME */
+.hero{
+ padding:20px 0 25px;
+}
+
+.hero h1{
+ font-size:30px;
+ margin-bottom:8px;
+}
+
+.hero p{
+ color:#8793a4;
+ line-height:1.5;
+}
+
+.search{
+ display:flex;
+ margin-top:20px;
+ gap:8px;
+}
+
+.search input{
+ flex:1;
+ padding:14px;
+ background:#111720;
+ border:1px solid #293340;
+ color:white;
+ border-radius:13px;
+ outline:none;
+}
+
+.search button{
+ border:0;
+ border-radius:13px;
+ padding:0 18px;
+ background:#55d6ff;
+ font-weight:bold;
+}
+
+.categories{
+ display:flex;
+ gap:8px;
+ overflow:auto;
+ padding-bottom:20px;
+}
+
+.categories button{
+ white-space:nowrap;
+ padding:9px 14px;
+ border-radius:20px;
+ border:1px solid #293340;
+ background:#111720;
+ color:#aab4c2;
+}
+
+.categories button.active{
+ background:#55d6ff;
+ color:#061018;
+}
+
+.title{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:14px;
+}
+
+.title h2{font-size:20px}
+
+.games{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:13px;
+}
+
+.card{
+ overflow:hidden;
+ background:#10151d;
+ border:1px solid #222b37;
+ border-radius:17px;
+}
+
+.cover{
+ height:145px;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ font-size:45px;
+ background:linear-gradient(135deg,#172c3e,#0b1118);
+}
+
+.info{padding:12px}
+
+.info h3{font-size:16px;margin-bottom:5px}
+
+.info p{
+ color:#7f8b9c;
+ font-size:12px;
+ margin-bottom:10px;
+}
+
+.play{
+ width:100%;
+ padding:9px;
+ border:0;
+ border-radius:9px;
+ background:#1b2531;
+ color:#55d6ff;
+ font-weight:bold;
+}
+
+/* PUBLISH */
+.panel{
+ background:#10151d;
+ border:1px solid #252e3a;
+ border-radius:20px;
+ padding:20px;
+ margin-top:10px;
+}
+
+.panel h2{margin-bottom:7px}
+
+.panel p{
+ color:#8490a0;
+ line-height:1.5;
+ font-size:14px;
+ margin-bottom:18px;
+}
+
+.file{
+ width:100%;
+ padding:13px;
+ background:#080c12;
+ border:1px dashed #344151;
+ color:#8e9bab;
+ border-radius:12px;
+ margin-bottom:12px;
+}
+
+/* PROFILE */
+.profile-box{text-align:center}
+
+.avatar{
+ width:85px;
+ height:85px;
+ margin:5px auto 15px;
+ border-radius:50%;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ background:#162331;
+ color:#55d6ff;
+ font-size:32px;
+ border:2px solid #293948;
+}
+
+.profile-box p{color:#8290a0;margin-top:7px}
+
+.logout{
+ margin-top:20px;
+ padding:12px 25px;
+ border:1px solid #66333b;
+ background:#241318;
+ color:#ff8290;
+ border-radius:10px;
+}
+
+/* NAV */
+nav{
+ position:fixed;
+ bottom:0;
+ left:0;
+ right:0;
+ height:66px;
+ z-index:30;
+ display:flex;
+ justify-content:space-around;
+ align-items:center;
+ background:#0c1016f5;
+ border-top:1px solid #202733;
+ backdrop-filter:blur(12px);
+}
+
+nav button{
+ border:0;
+ background:transparent;
+ color:#778393;
+ font-size:11px;
+}
+
+nav button.active{color:#55d6ff}
+
+.nav-icon{
+ display:block;
+ font-size:20px;
+ margin-bottom:3px;
+}
+
+.empty{
+ padding:35px 10px;
+ text-align:center;
+ color:#687587;
+ display:none;
+}
+
+.modal{
+ position:fixed;
+ inset:0;
+ z-index:100;
+ display:none;
+ align-items:center;
+ justify-content:center;
+ padding:20px;
+ background:#000b;
+}
+
+.modal.show{display:flex}
+
+.modal-box{
+ width:100%;
+ max-width:430px;
+ background:#10151d;
+ border:1px solid #293441;
+ border-radius:20px;
+ padding:22px;
+}
+
+.modal-head{
+ display:flex;
+ justify-content:space-between;
+ margin-bottom:15px;
+}
+
+.close{
+ border:0;
+ background:none;
+ color:#8d99a8;
+ font-size:22px;
+}
+
+@media(min-width:700px){
+ .games{grid-template-columns:repeat(4,1fr)}
+}
+
+/* GAMEVAULT STORE UI */
+:root{
+  --bg:#07090d;--surface:#10151d;--surface2:#151c26;--line:#27313e;
+  --text:#f5f7fa;--muted:#8b97a8;--accent:#55d6ff;
+}
+body{background:var(--bg)}
+.store-top{display:flex;align-items:center;gap:12px;flex:1}
+.menu-btn{border:0;background:transparent;color:#cbd5e1;font-size:25px;padding:4px}
+.header-search{display:none;flex:1;max-width:520px}
+.header-search input{width:100%;padding:11px 15px;border-radius:22px;border:1px solid var(--line);background:#111720;color:#fff;outline:none}
+.header-actions{display:flex;align-items:center;gap:8px}
+.install-note{display:inline-block;font-size:11px;color:var(--muted);margin-top:5px}
+.rating{color:#ffd166;font-size:12px}
+.badge{display:inline-block;padding:4px 8px;border-radius:20px;background:#172b39;color:var(--accent);font-size:10px}
+.game-meta{display:flex;justify-content:space-between;align-items:center;margin:5px 0 9px}
+.cover img{display:block}
+.card{transition:transform .15s,border-color .15s}
+.card:hover{transform:translateY(-2px);border-color:#3b5268}
+.detail-cover{width:110px;height:110px;border-radius:20px;overflow:hidden;flex:none;background:#172c3e;display:flex;align-items:center;justify-content:center;font-size:42px}
+.detail-cover img{width:100%;height:100%;object-fit:cover}
+.detail-head{display:flex;gap:16px;align-items:center;margin-bottom:18px}
+.detail-head h2{margin-bottom:5px}
+.detail-actions{display:flex;gap:8px;margin-top:12px}
+.secondary{flex:1;padding:11px;border:1px solid var(--line);border-radius:10px;background:#151d27;color:#dbe7f2;font-weight:bold}
+.rating-row{display:flex;gap:12px;align-items:center;margin:14px 0;color:var(--muted)}
+.chips{display:flex;gap:7px;overflow:auto;margin-bottom:18px}
+.chips button{white-space:nowrap}
+.toast{position:fixed;left:50%;bottom:82px;transform:translateX(-50%);background:#1b222c;color:#fff;border:1px solid #344151;padding:11px 15px;border-radius:12px;z-index:200;display:none}
+.toast.show{display:block}
+@media(min-width:700px){
+  .header-search{display:block}
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN PAGE -->
+<section id="authPage" class="page active">
+<div class="auth">
+
+<div class="auth-box">
+
+<div class="brand">GAMEVAULT</div>
+<div class="sub">Discover • Play • Publish</div>
+
+<div class="tabs">
+<button id="loginTab" class="active" onclick="showLogin()">Login</button>
+<button id="signupTab" onclick="showSignup()">Sign Up</button>
+</div>
+
+<div id="loginForm">
+
+<input id="loginEmail" class="input"
+placeholder="Email or username">
+
+<input id="loginPass" class="input"
+type="password"
+placeholder="Password">
+
+<button class="primary" onclick="login()">Login</button>
+
+<button class="google-btn" onclick="loginWithGoogle()">
+  Continue with Google
+</button>
+
+</div>
+
+<div id="signupForm" style="display:none">
+
+<input id="signupName" class="input"
+placeholder="Developer name">
+
+<input id="signupEmail" class="input"
+placeholder="Email">
+
+<input id="signupPass" class="input"
+type="password"
+placeholder="Create password">
+
+<button class="primary" onclick="signup()">Create Account</button>
+
+<button class="google-btn" onclick="loginWithGoogle()">
+  Continue with Google
+</button>
+
+</div>
+
+<div class="small">
+Sign in with Google • Your password is handled by Google/Supabase.<br>
+Google OAuth works after this page is hosted on HTTPS.
+</div>
+
+</div>
+</div>
+</section>
+
+
+<!-- APP -->
+<section id="appPage" class="page">
+
+<header>
+<div class="store-top">
+<button class="menu-btn" onclick="openPage('home')" aria-label="Home">☰</button>
+<div class="logo">GAMEVAULT</div>
+<div class="header-search">
+<input id="topSearch" oninput="syncSearch(this.value)" placeholder="Search games & developers...">
+</div>
+</div>
+<div class="header-actions">
+<button class="user-btn" onclick="openPage('profile')" id="headerAvatar">●</button>
+</div>
+</header>
+
+<main>
+
+<!-- HOME -->
+<div id="homePage" class="appScreen">
+
+<div class="hero">
+<h1>Discover games</h1>
+<p>Explore, play and publish games from the GameVault community.</p>
+
+<div class="search">
+<input id="searchInput"
+oninput="searchGames()"
+placeholder="Search games...">
+<button onclick="searchGames()">Search</button>
+</div>
+</div>
+
+<div class="categories chips">
+<button class="active" onclick="filterCategory('All',this)">All</button>
+<button onclick="filterCategory('Puzzle',this)">Puzzle</button>
+<button onclick="filterCategory('Action',this)">Action</button>
+<button onclick="filterCategory('Racing',this)">Racing</button>
+<button onclick="filterCategory('Arcade',this)">Arcade</button>
+<button onclick="filterCategory('Strategy',this)">Strategy</button>
+</div>
+
+<div class="title">
+<h2>Featured Games</h2>
+</div>
+
+<div id="gameList" class="games"></div>
+
+<div id="empty" class="empty">
+No games found.
+</div>
+
+</div>
+
+
+<!-- PUBLISH -->
+<div id="publishPage" class="appScreen" style="display:none">
+
+<div class="panel">
+
+<h2>Publish Your Game</h2>
+
+<p>
+Create a game listing. Your account and game information are saved in Supabase.
+</p>
+
+<input id="gameName" class="input"
+placeholder="Game name">
+
+<textarea id="gameDesc"
+class="input"
+rows="4"
+placeholder="Game description"></textarea>
+
+<select id="gameCategory" class="input">
+<option>Puzzle</option>
+<option>Action</option>
+<option>Racing</option>
+<option>Arcade</option>
+<option>Strategy</option>
+</select>
+
+<input id="gameIcon" class="file"
+type="file"
+accept="image/*">
+
+<input id="gameUrl" class="input"
+type="url"
+placeholder="Game URL (https://...)">
+
+<input id="gameFile" class="file"
+type="file"
+accept=".zip,.apk,.html">
+
+<button class="primary" onclick="publishGame()">
+Publish Game
+</button>
+
+</div>
+
+</div>
+
+
+<!-- LIBRARY -->
+<div id="libraryPage" class="appScreen" style="display:none">
+
+<div class="title">
+<h2>My Library</h2>
+</div>
+
+<div id="libraryList" class="games"></div>
+
+<div id="libraryEmpty" class="empty" style="display:block">
+Your library is empty.<br>
+Open a game and add it here.
+</div>
+
+</div>
+
+
+<!-- PROFILE -->
+<div id="profilePage" class="appScreen" style="display:none">
+
+<div class="panel profile-box">
+
+<div class="avatar">●</div>
+
+<h2 id="profileName">Developer</h2>
+<p id="profileEmail">developer@example.com</p>
+
+<button class="logout" onclick="logout()">Logout</button>
+
+</div>
+
+</div>
+
+</main>
+
+
+<nav>
+
+<button id="navHome" class="active"
+onclick="openPage('home')">
+<span class="nav-icon">⌂</span>
+Home
+</button>
+
+<button id="navSearch"
+onclick="focusSearch()">
+<span class="nav-icon">⌕</span>
+Search
+</button>
+
+<button id="navPublish"
+onclick="openPage('publish')">
+<span class="nav-icon">＋</span>
+Publish
+</button>
+
+<button id="navLibrary"
+onclick="openPage('library')">
+<span class="nav-icon">▣</span>
+Library
+</button>
+
+<button id="navProfile"
+onclick="openPage('profile')">
+<span class="nav-icon">●</span>
+Profile
+</button>
+
+</nav>
+
+</section>
+
+
+<!-- GAME MODAL -->
+<div id="gameModal" class="modal">
+
+<div class="modal-box">
+
+<div class="modal-head">
+<h2 id="modalTitle">Game</h2>
+<button class="close" onclick="closeModal()">×</button>
+</div>
+
+<div class="detail-head">
+  <div id="modalCover" class="detail-cover">🎮</div>
+  <div>
+    <h2 id="modalTitle">Game</h2>
+    <span id="modalCategory" class="badge">Game</span>
+    <div class="rating-row"><span class="rating">★★★★★</span><span id="modalDeveloper">GameVault developer</span></div>
+  </div>
+</div>
+<p id="modalDesc" style="color:#8995a5;line-height:1.6"></p>
+<div class="detail-actions">
+  <button class="primary" onclick="playSelectedGame()">▶ Play</button>
+  <button class="secondary" onclick="addToLibrary()">＋ Library</button>
+</div>
+
+</div>
+</div>
+
+
+<script>
+
+/* SUPABASE APP */
+let currentUser = null;
+let games = [];
+let selectedGame = null;
+
+async function initApp(){
+  try{
+    const { data, error } = await db.auth.getSession();
+    if(error) throw error;
+
+    currentUser = data.session ? data.session.user : null;
+
+    if(currentUser){
+      await enterApp();
+    }else{
+      showAuthPage();
+    }
+
+    db.auth.onAuthStateChange((event, session) => {
+      currentUser = session ? session.user : null;
+      if(event === 'SIGNED_IN' && currentUser){
+        setTimeout(() => enterApp(), 0);
+      }
+      if(event === 'SIGNED_OUT'){
+        showAuthPage();
+      }
+    });
+  }catch(err){
+    console.error('Auth initialization error:', err);
+    showAuthPage();
+  }
+}
+
+function showAuthPage(){
+  authPage.classList.add('active');
+  appPage.classList.remove('active');
+  showLogin();
+}
+
+/* AUTH */
+function showLogin(){
+  loginForm.style.display="block";
+  signupForm.style.display="none";
+  loginTab.classList.add("active");
+  signupTab.classList.remove("active");
+}
+
+function showSignup(){
+  loginForm.style.display="none";
+  signupForm.style.display="block";
+  loginTab.classList.remove("active");
+  signupTab.classList.add("active");
+}
+
+async function signup(){
+  const name=signupName.value.trim();
+  const email=signupEmail.value.trim();
+  const pass=signupPass.value;
+
+  if(!name||!email||!pass){
+    alert("সব তথ্য পূরণ করো।");
+    return;
+  }
+
+  if(pass.length < 6){
+    alert("Password কমপক্ষে 6 অক্ষরের দাও।");
+    return;
+  }
+
+  const { data, error } = await db.auth.signUp({
+    email,
+    password: pass,
+    options: {
+      data: { display_name: name }
+    }
+  });
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  if(data.session){
+    currentUser = data.user;
+    await enterApp();
+  }else{
+    alert("Account তৈরি হয়েছে। Email confirmation চালু থাকলে আগে email confirm করো, তারপর Login করো।");
+    showLogin();
+  }
+}
+
+async function login(){
+  const email=loginEmail.value.trim();
+  const pass=loginPass.value;
+
+  if(!email||!pass){
+    alert("Email এবং password দাও।");
+    return;
+  }
+
+  const { data, error } = await db.auth.signInWithPassword({
+    email,
+    password: pass
+  });
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  currentUser = data.user;
+  await enterApp();
+}
+
+async function loginWithGoogle(){
+  const btn = document.querySelector('.google-btn');
+  if(btn){ btn.disabled = true; btn.textContent = 'Opening Google...'; }
+
+  try{
+    // IMPORTANT: for production/hosted use, set this page's URL in
+    // Supabase Authentication -> URL Configuration -> Redirect URLs.
+    const redirectTo = window.location.href.split('#')[0];
+
+    if(location.protocol === 'file:'){
+      throw new Error('Google login needs the HTML to be hosted on a web address (HTTPS). Opening the file directly from Downloads will not complete OAuth.');
+    }
+
+    const { error } = await db.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo,
+        queryParams: { prompt: 'select_account' }
+      }
+    });
+
+    if(error) throw error;
+  }catch(error){
+    alert('Google login শুরু করা যায়নি: ' + error.message);
+    if(btn){ btn.disabled = false; btn.textContent = 'Continue with Google'; }
+  }
+}
+
+async function logout(){
+  const { error } = await db.auth.signOut();
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  currentUser=null;
+  showAuthPage();
+}
+
+/* APP */
+async function enterApp(){
+  if(!currentUser) return;
+
+  authPage.classList.remove("active");
+  appPage.classList.add("active");
+
+  const meta = currentUser.user_metadata || {};
+  profileName.textContent = meta.display_name || currentUser.email || "Developer";
+  profileEmail.textContent = currentUser.email || "";
+  const initial = (meta.display_name || currentUser.email || "U").trim().charAt(0).toUpperCase();
+  headerAvatar.textContent = initial || "U";
+
+  // Always land on GameVault Home after login.
+  openPage("home");
+
+  await loadGames();
+}
+
+/* NAVIGATION */
+function openPage(page){
+  document.querySelectorAll(".appScreen")
+    .forEach(x=>x.style.display="none");
+
+  document.querySelectorAll("nav button")
+    .forEach(x=>x.classList.remove("active"));
+
+  if(page==="home"){
+    homePage.style.display="block";
+    navHome.classList.add("active");
+  }
+
+  if(page==="publish"){
+    publishPage.style.display="block";
+    navPublish.classList.add("active");
+  }
+
+  if(page==="library"){
+    libraryPage.style.display="block";
+    navLibrary.classList.add("active");
+    renderLibrary();
+  }
+
+  if(page==="profile"){
+    profilePage.style.display="block";
+    navProfile.classList.add("active");
+  }
+}
+
+function focusSearch(){
+  openPage("home");
+  setTimeout(()=>searchInput.focus(),100);
+}
+
+/* DATABASE GAMES */
+async function loadGames(){
+  const { data, error } = await db
+    .from("games")
+    .select("*")
+    .order("created_at", {ascending:false});
+
+  if(error){
+    console.error(error);
+    alert("Games load করা যায়নি: " + error.message);
+    games=[];
+    renderGames();
+    return;
+  }
+
+  games = (data || []).map(game => ({
+    ...game,
+    desc: game.description || "",
+    icon: game.icon_url || "🎮"
+  }));
+
+  renderGames();
+}
+
+function renderGames(list=games){
+  gameList.innerHTML="";
+
+  if(list.length===0){
+    empty.style.display="block";
+    return;
+  }
+
+  empty.style.display="none";
+
+  list.forEach((game,index)=>{
+    let card=document.createElement("div");
+    card.className="card";
+
+    card.innerHTML=`
+      <div class="cover">
+        ${game.icon_url
+          ? `<img src="${escapeHTML(game.icon_url)}" alt="" style="width:100%;height:100%;object-fit:cover">`
+          : "🎮"}
+      </div>
+      <div class="info">
+        <div class="game-meta"><span class="badge">${escapeHTML(game.category || "Game")}</span><span class="rating">★ ${escapeHTML(game.rating || "4.8")}</span></div>
+        <h3>${escapeHTML(game.name)}</h3>
+        <p>${escapeHTML(game.description || "Discover this game on GameVault.")}</p>
+        <button class="play" onclick="openGameById(${JSON.stringify(game.id)})">VIEW GAME</button>
+      </div>
+    `;
+
+    gameList.appendChild(card);
+  });
+}
+
+function openGameById(id){
+  selectedGame = games.find(g => String(g.id) === String(id));
+  if(!selectedGame) return;
+
+  modalTitle.textContent = selectedGame.name || "Game";
+  modalDesc.textContent = selectedGame.description || selectedGame.desc || "No description available.";
+  modalCategory.textContent = selectedGame.category || "Game";
+  modalDeveloper.textContent = selectedGame.developer_id ? "Community developer" : "GameVault";
+
+  modalCover.innerHTML = selectedGame.icon_url
+    ? `<img src="${escapeHTML(selectedGame.icon_url)}" alt="">`
+    : "🎮";
+
+  gameModal.classList.add("show");
+}
+
+function playSelectedGame(){
+  if(!selectedGame) return;
+  if(selectedGame.game_url){
+    window.open(selectedGame.game_url,"_blank","noopener,noreferrer");
+  }else{
+    showToast("This game does not have a Play URL yet.");
+  }
+}
+
+function closeModal(){
+  gameModal.classList.remove("show");
+}
+
+function addToLibrary(){
+  if(!selectedGame) return;
+
+  let library=JSON.parse(localStorage.getItem("gv_library") || "[]");
+
+  if(!library.some(x=>String(x.id)===String(selectedGame.id))){
+    library.push(selectedGame);
+    localStorage.setItem("gv_library",JSON.stringify(library));
+    showToast("Added to your Library.");
+  }else{
+    showToast("Already in your Library.");
+  }
+}
+
+/* SEARCH */
+function syncSearch(value){
+  searchInput.value = value;
+  searchGames();
+}
+function searchGames(){
+  let q=searchInput.value.toLowerCase().trim();
+  if(document.getElementById("topSearch")) topSearch.value = searchInput.value;
+
+  let filtered=games.filter(game=>
+    (game.name || "").toLowerCase().includes(q) ||
+    (game.category || "").toLowerCase().includes(q) ||
+    (game.description || "").toLowerCase().includes(q)
+  );
+
+  renderGames(filtered);
+}
+
+/* CATEGORY */
+function filterCategory(category,btn){
+  document.querySelectorAll(".categories button")
+    .forEach(x=>x.classList.remove("active"));
+
+  btn.classList.add("active");
+
+  if(category==="All"){
+    renderGames();
+  }else{
+    renderGames(
+      games.filter(x=>x.category===category)
+    );
+  }
+}
+
+/* PUBLISH TO SUPABASE */
+async function publishGame(){
+  if(!currentUser){
+    alert("আগে Login করো।");
+    return;
+  }
+
+  let name=gameName.value.trim();
+  let desc=gameDesc.value.trim();
+  let category=gameCategory.value;
+  let gameUrl=document.getElementById("gameUrl").value.trim();
+  let iconFile=gameIcon.files[0];
+
+  if(!name||!desc){
+    alert("Game name এবং description দাও।");
+    return;
+  }
+
+  let iconUrl="";
+
+  /* For now, only save an image URL if the user enters one later.
+     Local file upload needs a Supabase Storage bucket and policies. */
+  if(iconFile){
+    alert("এখনো image upload Storage connect করা হয়নি। Game information publish হবে, icon পরে Storage দিয়ে যোগ করা যাবে।");
+  }
+
+  const row = {
+    id: crypto.randomUUID(),
+    name,
+    description: desc,
+    category,
+    icon_url: iconUrl,
+    game_url: gameUrl || null,
+    developer_id: currentUser.id,
+    status: "pending",
+    created_at: new Date().toISOString()
+  };
+
+  const { error } = await db.from("games").insert(row);
+
+  if(error){
+    alert("Publish failed: " + error.message);
+    return;
+  }
+
+  showToast("Game submitted successfully.");
+
+  gameName.value="";
+  gameDesc.value="";
+  gameIcon.value="";
+  gameFile.value="";
+  document.getElementById("gameUrl").value="";
+
+  await loadGames();
+  openPage("home");
+}
+
+/* LIBRARY */
+function renderLibrary(){
+  let library=
+    JSON.parse(localStorage.getItem("gv_library") || "[]");
+
+  libraryList.innerHTML="";
+
+  if(library.length===0){
+    libraryEmpty.style.display="block";
+    return;
+  }
+
+  libraryEmpty.style.display="none";
+
+  library.forEach(game=>{
+    let card=document.createElement("div");
+    card.className="card";
+
+    card.innerHTML=`
+      <div class="cover">
+        ${game.icon_url
+          ? `<img src="${escapeHTML(game.icon_url)}" alt="" style="width:100%;height:100%;object-fit:cover">`
+          : "🎮"}
+      </div>
+      <div class="info">
+        <h3>${escapeHTML(game.name)}</h3>
+        <p>${escapeHTML(game.category || "Game")}</p>
+        <button class="play"
+          onclick="openLibraryGame(${JSON.stringify(game.id)})">
+          PLAY
+        </button>
+      </div>
+    `;
+
+    libraryList.appendChild(card);
+  });
+}
+
+function openLibraryGame(id){
+  const library=JSON.parse(
+    localStorage.getItem("gv_library") || "[]"
+  );
+  const game=library.find(x=>String(x.id)===String(id));
+
+  if(game && game.game_url){
+    window.open(game.game_url,"_blank");
+  }else{
+    alert("এই game-এর এখনো Play URL দেওয়া হয়নি।");
+  }
+}
+
+/* Start */
+initApp();
+
+function showToast(message){
+  const t=document.getElementById("toast");
+  t.textContent=message;
+  t.classList.add("show");
+  clearTimeout(window.__gvToast);
+  window.__gvToast=setTimeout(()=>t.classList.remove("show"),2200);
+}
+
+/* SECURITY HELPER */
+
+function escapeHTML(text){
+
+return String(text)
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+}
+
+</script>
+
+<div id="toast" class="toast"></div>
+</body>
+</html>
